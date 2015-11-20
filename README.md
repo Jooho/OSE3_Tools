@@ -7,7 +7,7 @@
 
 **Openshift v3 tools**, these tools are useful for who use Openshift v3.
 
-#### RHN Repository Backup Script
+#### * backup_ose3_repos.sh  (RHN Repository Backup Script)
  This shell script is for backup openshift v3 repositories. In order to test openshift v3, you should sync the environment of client but you can always install latest packages via yum. Therefore, you have to archieve essential packages for each version formatted by ISO file. With those ISO file, you are able to configure specific version of openshift v3. 
  
  
