@@ -99,7 +99,7 @@ done
 echo "Create repositories \(for all channels\)"
 for REPO in $BACKUP_REPOS
 do 
-   	cd $REPO | createrepo . | cd .
+   	cd $REPO | createrepo . | cd ..
 done
 
 
