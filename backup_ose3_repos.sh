@@ -18,16 +18,16 @@
 #  USER - rhn login user id.(it should be changed when IS_FIRST set to true)
 #  PASSWORD - rhn login user password.(it should be changed when IS_FIRST set to true)
 
-RHEL_VERSION="7.1"
+RHEL_VERSION="7.2"
 RHEL_MAJOR_VERSION=$(echo $RHEL_VERSION |cut -d"." -f1)
-OSE_VERSION="3.0"
+OSE_VERSION="3.1"
 BACKUP_REPOS="rhel-$RHEL_MAJOR_VERSION-server-rpms rhel-$RHEL_MAJOR_VERSION-server-extras-rpms rhel-ha-for-rhel-$RHEL_MAJOR_VERSION-server-rpms rhel-$RHEL_MAJOR_VERSION-server-ose-$OSE_VERSION-rpms"
 TEMP_DIRECTORY=/tmp/temp_repo_root
 ISO_DIRECTORY=~/ISO_FILES
 CLEAR=false
-IS_FIRST=false
-USER=test      # If IS_FIRST set true, you have to set this parameter which is rhn user id.
-PASSWORD=test  # If IS_FIRST set true, you have to set this parameter which is rhn password.
+IS_FIRST=true
+USER=test     # If IS_FIRST set true, you have to set this parameter which is rhn user id.
+PASSWORD=test    # If IS_FIRST set true, you have to set this parameter which is rhn password.
 
 
 
@@ -44,7 +44,13 @@ then
   mkdir -p $TEMP_DIRECTORY
 
 else 
-  echo "TEMP directory won't be deleted"
+  if [ -e $TEMP_DIRECTORY ]; then
+     echo "TEMP directory won't be deleted"
+  else
+     # Create temp_repo_root directory
+     echo "Create TEMP directory($TEMP_DIRECTORY)"
+     mkdir -p $TEMP_DIRECTORY
+   fi
 fi
 # Move to temp_repo_root
 cd $TEMP_DIRECTORY
@@ -53,7 +59,8 @@ cd $TEMP_DIRECTORY
 if [[ $IS_FIRST == true ]]
 then
   # Register employee subscription (Should be commented after registered.)
-  subscription-manager register --user="$USER" --password='$PASSWORD'
+  echo "subscription-manager register --username=$USER --password='$PASSWORD'"
+  subscription-manager register --username=$USER --password='$PASSWORD'
   subscription-manager list --available
   subscription-manager attach --pool=8a85f9833e1404a9013e3cddf99305e6
 
@@ -156,6 +163,10 @@ echo done!
 # mkdir -p /var/iso_images/ose
 # mount -o loop,ro rhel-server-7.1-x86_64_151119.iso /var/iso_images/rhel
 # mount -o loop,ro ose-3.0-x86_64_151119.iso /var/iso_images/ose
+
+#/etc/fstab
+#/root/ose/rhel-server-7.1-x86_64-151125.iso /var/iso_images/rhel iso9660 loop 0 0
+#/root/ose/ose-3.1-x86_64-151125.iso /var/iso_images/ose iso9660 loop 0 0
 
 #cat  /etc/yum.repos.d/ose.repo
 #[ose]
