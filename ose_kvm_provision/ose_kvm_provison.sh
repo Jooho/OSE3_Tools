@@ -57,7 +57,9 @@ if [[ "$c_mode" == "clone" ]]; then
           #sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb 
         fi
         # Attach a new network interface for public ip
-        sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --model virtio --config --live
+        echo sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --target eth${ETH_NUM} --model virtio --config --live
+        #sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --target eth${ETH_NUM} --model virtio --config --live
+        sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --config --live
   done
   sudo virsh list
 # Usage :

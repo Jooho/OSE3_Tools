@@ -127,7 +127,7 @@ public_network_dev_name=eth0
 
 [nodes]
 node1.example.com ansible_ssh_host=192.168.124.192 mgmt_network_ip=192.168.124.192 public_network_ip=192.168.200.103 public_network_gw=192.168.200.1 openshift_node_labels="{'region': 'primary', 'zone': 'infra'}" openshift_public_hostname=node1.example.com openshift_hostname=node1.example.com openshift_ip=192.168.200.103 openshift_public_ip=192.168.200.103
-node2.example.com ansible_ssh_host=%NODE2._PRIVATE_IP% mgmt_network_ip=192.168.124.214 public_network_ip=192.168.200.104 public_network_gw=192.168.200.1 openshift_node_labels="{'region': 'primary', 'zone': 'east'}" openshift_public_hostname=node2.example.com openshift_hostname=node2.example.com openshift_ip=192.168.200.104 openshift_public_ip=192.168.200.104
+node2.example.com ansible_ssh_host=192.168.124.214 mgmt_network_ip=192.168.124.214 public_network_ip=192.168.200.104 public_network_gw=192.168.200.1 openshift_node_labels="{'region': 'primary', 'zone': 'east'}" openshift_public_hostname=node2.example.com openshift_hostname=node2.example.com openshift_ip=192.168.200.104 openshift_public_ip=192.168.200.104
 node3.example.com ansible_ssh_host=192.168.124.122 mgmt_network_ip=192.168.124.122 public_network_ip=192.168.200.105 public_network_gw=192.168.200.1 openshift_node_labels="{'region': 'primary', 'zone': 'west'}" openshift_public_hostname=node3.example.com openshift_hostname=node3.example.com openshift_ip=192.168.200.105 openshift_public_ip=192.168.200.105
 
 
