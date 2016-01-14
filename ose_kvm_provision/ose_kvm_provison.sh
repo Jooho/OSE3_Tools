@@ -1,8 +1,8 @@
 export BASE_VM="RHEL_7U1"
 export VM_PATH="/home/jooho/dev/REDHAT_VM"
 export MAX_ARCH="master1 master2 master3 node1 node2 node3 etcd1 etcd2 etcd3 infra lb"
-export MIN_ARCH="master  node1 node2 "
-export MID_ARCH="master etcd node1 node2 "
+export MIN_ARCH="master1  node1 node2 infra"
+export MID_ARCH="master1 master2 master3 etcd node1 node2 infra lb"
 export PUBLIC_IP_C_LEVEL="192.168.200"   #Depend on bridge ip range
 export PUBLIC_START_IP=100
 export vms
@@ -59,6 +59,7 @@ if [[ "$c_mode" == "clone" ]]; then
         # Attach a new network interface for public ip
         sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --model virtio --config --live
   done
+  sudo virsh list
 # Usage :
 #        ose_kvm_provison.sh -mode=info -arch=min -template=./production-master-ha-etcd-ha-lb.yaml.template
 elif [[ "$c_mode" == "info" ]]; then
@@ -121,8 +122,9 @@ elif [[ "$c_mode" == "clean" ]]; then
         #sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2"
        sudo  rm -rf $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2"
       fi
-      sudo virsh undefine $BASE_VM"_ose31_"$c_arch"_"$vm 
+
       sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm".qcow2"
+      sudo virsh undefine $BASE_VM"_ose31_"$c_arch"_"$vm 
     done
 
 elif [[ "$c_mode" == "force" ]]; then
