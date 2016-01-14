@@ -49,6 +49,12 @@ if [[ "$c_mode" == "clone" ]]; then
         # Clone qcow2 file
         sudo virt-clone -o "$BASE_VM" --name $BASE_VM"_ose31_"$c_arch"_"$vm --auto-clone 
         sudo virsh start $BASE_VM"_ose31_"$c_arch"_"$vm
+
+        # Attach a new network interface for public ip
+        echo sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --target eth${ETH_NUM} --model virtio --config --live
+        #sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --target eth${ETH_NUM} --model virtio --config --live
+        sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --config --live
+
         # Attach a new disk for docker-pool to node vm
         if [[ $vm =~ "node" ]]; then
           #qemu-img create -f qcow2 myRHELVM1-disk2.qcow2 7G
@@ -56,10 +62,6 @@ if [[ "$c_mode" == "clone" ]]; then
           sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb --live --persistent
           #sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb 
         fi
-        # Attach a new network interface for public ip
-        echo sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --target eth${ETH_NUM} --model virtio --config --live
-        #sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --target eth${ETH_NUM} --model virtio --config --live
-        sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --config --live
   done
   sudo virsh list
 # Usage :
