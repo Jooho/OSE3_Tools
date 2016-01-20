@@ -95,7 +95,7 @@ elif [[ "$c_mode" == "template" ]]; then
   if [[ "$c_arch" == "max" ]]; then
     INVENTORY_FILE=production-master-ha-etcd-ha-lb.yaml
   elif [[ "$c_arch" == "mid" ]]; then
-    INVENTORY_FILE=production-master-ha-etcd-ha-lb.yaml
+    INVENTORY_FILE=production-master-ha-lb.yaml
   else
     INVENTORY_FILE=production-master-ha-etcd-ha-lb.yaml
   fi
