@@ -42,7 +42,7 @@
          template : it changes IPs in inventory file which will be used for installation ose using  [ansible-ose3-install](https://github.com/Jooho/ansible-ose3-install)
   
   arch - max : 3xMaster, 3xNode, 3xETCD, 1xInfra, 1xLB
-         mid : 3xMaster, 3xNode, 1xETCD, 1xInfra, 1xLB  (TBD)
+         mid : 3xMaster(3xETCD), 3xNode, 1xInfra, 1xLB  
          min : 1xMaster, 2xNode, 1xInfra     (TBD)
 ```
 
