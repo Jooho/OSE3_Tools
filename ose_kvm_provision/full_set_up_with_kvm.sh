@@ -1,36 +1,45 @@
 export ISO_PATH=/home/jooho/dev/OSE_REPO_ISO/rhel7u1_ose3u1_151125
 
-git clone https://github.com/Jooho/ansible-ose3-install
-git clone https://github.com/Jooho/rhep-tools
+#Check architecture
+c_arch=$1
+valid=false
+for arch in min mid max;
+do
+  if [[ $c_arch == $arch ]]; then
+     valid=true 
+  fi
+done
+if [[ z$c_arch ==  "z" ]]  || [[ $valid != "true" ]]  ; then
+  echo "usage : ./full_set_up_with_kvm.sh max (mid,min)"
+  exit 1
+fi
+
+if [[ -e ./ansible-ose3-install ]]; then
+  echo "ansible-ose3-install is already cloned so I will pull it"
+  cd ./ansible-ose3-install; git pull; cd ..
+else
+  echo "ansible-ose3-install is not here so I will clone it"
+  git clone https://github.com/Jooho/ansible-ose3-install
+fi  
+
+echo $PWD
+ls $PWD/rhep-tools
+if [[ -e ./rhep-tools ]]; then
+  echo "rhep-tools is already cloned so I will pull it"
+  cd ./rhep_tools; git pull; cd .. 
+else
+  echo "rhep-tools is not there so I will clone it"
+  git clone https://github.com/Jooho/rhep-tools
+fi
 
 cp ansible-ose3-install/shell/setup.sh .
 
-#Check architecture
-c_arch=$1
-if [[ z$c_arch == z ]]; then
-         echo "usage : ./full_set_up_with_kvm.sh max (mid,min)"
-         exit 1
-else
-         case ${c_arch} in
-             max)
-                vms=$MAX_ARCH
-                 ;;
-             mid)
-                 vms=$MID_ARCH
-                 ;;
-             min)
-                 vms=$MIN_ARCH
-                 ;;
-             *)
-                 echo "Unknown architecture - please select one of max, ↳mid and min"
-          esac
-fi
 
 
 #Create KVM VMs according to architecture
 cd ./rhep_tools/ose_kvm_provision/
-./ose_kvm_provision.sh -mode=info -arch=$vms
-./ose_kvm_provision.sh -mode=template -arch=$vms
+./ose_kvm_provision.sh -mode=info -arch=$c_arch
+./ose_kvm_provision.sh -mode=template -arch=$c_arch
 
 # Copy inventory file & ip information txt file.
 cd ../../
