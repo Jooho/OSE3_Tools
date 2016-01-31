@@ -5,14 +5,39 @@ git clone https://github.com/Jooho/rhep-tools
 
 cp ansible-ose3-install/shell/setup.sh .
 
-cd ./rhep_tools/ose_kvm_provision/
-./ose_kvm_provision.sh -mode=info -arch=max
-./ose_kvm_provision.sh -mode=template -arch=max
+#Check architecture
+c_arch=$1
+if [[ z$c_arch == z ]]; then
+         echo "usage : ./full_set_up_with_kvm.sh max (mid,min)"
+         exit 1
+else
+         case ${c_arch} in
+             max)
+                vms=$MAX_ARCH
+                 ;;
+             mid)
+                 vms=$MID_ARCH
+                 ;;
+             min)
+                 vms=$MIN_ARCH
+                 ;;
+             *)
+                 echo "Unknown architecture - please select one of max, ↳mid and min"
+          esac
+fi
 
+
+#Create KVM VMs according to architecture
+cd ./rhep_tools/ose_kvm_provision/
+./ose_kvm_provision.sh -mode=info -arch=$vms
+./ose_kvm_provision.sh -mode=template -arch=$vms
+
+# Copy inventory file & ip information txt file.
 cd ../../
 cp ./rhep_tools/ose_kvm_provision/*.yaml .
 cp ./rhep_tools/ose_kvm_provision/*.txt .
 
+#Copy ISO files to master1 server 
 cp -R $ISO_PATH/* .
 master_ip=$(grep MASTER1_PRIVATE_IP ./ose31_kvm_info.txt|cut -d"=" -f2)
 echo -e "Type password : \c"

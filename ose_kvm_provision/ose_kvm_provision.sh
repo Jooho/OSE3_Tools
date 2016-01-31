@@ -65,7 +65,7 @@ if [[ "$c_mode" == "clone" ]]; then
   done
   sudo virsh list
 # Usage :
-#        ose_kvm_provison.sh -mode=info -arch=min -template=./production-master-ha-etcd-ha-lb.yaml.template
+#        ose_kvm_provison.sh -mode=info -arch=min 
 elif [[ "$c_mode" == "info" ]]; then
   if [[ -e $INFO_FILE ]]; then
     rm $INFO_FILE
@@ -90,6 +90,10 @@ elif [[ "$c_mode" == "info" ]]; then
     PUBLIC_START_IP=$((PUBLIC_START_IP+1))
    done
 #To-do
+#Usage : 
+#        ose_kvm_provison.sh -mode=template -arch=min 
+# 
+
 elif [[ "$c_mode" == "template" ]]; then
   export INVENTORY_FILE
   if [[ "$c_arch" == "max" ]]; then
@@ -103,20 +107,9 @@ elif [[ "$c_mode" == "template" ]]; then
   cp ./template/${INVENTORY_FILE}.template ./${INVENTORY_FILE}
 
   for vm in $vms; do
-    #PRIVATE_IP=$(cat $INFO_FILE|grep ${vm}_PRIVATE_IP|cut -d"=" -f2)
-    #PUBLIC_IP=$(cat $INFO_FILE|grep ${vm}_PUBLIC_IP|cut -d"=" -f2)
-    #PUBLIC_GW_IP=$(cat $INFO_FILE|grep ${vm}_PUBLIC_GW_IP|cut -d"=" -f2)
-  
     sed -e "s/%${vm^^}_PRIVATE_IP%/$(cat $INFO_FILE|grep ${vm^^}_PRIVATE_IP|cut -d'=' -f2)/g" -i ./${INVENTORY_FILE}
     sed -e "s/%${vm^^}_PUBLIC_IP%/$(cat $INFO_FILE|grep ${vm^^}_PUBLIC_IP|cut -d'=' -f2)/g" -i ./${INVENTORY_FILE}
     sed -e "s/%${vm^^}_PUBLIC_GW_IP%/$(cat $INFO_FILE|grep ${vm^^}_PUBLIC_GW_IP|cut -d'=' -f2)/g" -i ./${INVENTORY_FILE}
-
-    #sed -e "s/%${vm^^}_PRIVATE_IP%/$PRIVATE_IP/g" -i ./${INVENTORY_FILE}
-    #sed -e "s/%${vm^^}_PUBLIC_IP%/$PUBLIC_IP/g" -i ./${INVENTORY_FILE}
-    #sed -e "s/%${vm^^}_PUBLIC_GW_IP%/$PUBLIC_GW_IP/g" -i ./${INVENTORY_FILE}
-    #echo sed -e "s/%${vm^^}_PRIVATE_IP%/$PRIVATE_IP/g" -i ./${INVENTORY_FILE}
-    #echo sed -e "s/%${vm^^}_PUBLIC_IP%/$PUBLIC_IP/g" -i ./${INVENTORY_FILE}
-    #echo sed -e "s/%${vm^^}_PUBLIC_GW_IP%/$PUBLIC_GW_IP/g" -i ./${INVENTORY_FILE}
   done
 
 elif [[ "$c_mode" == "clean" ]]; then
