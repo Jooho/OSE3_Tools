@@ -18,7 +18,6 @@ master_ip=$(grep MASTER1_PRIVATE_IP ./ose31_kvm_info.txt|cut -d"=" -f2)
 echo -e "Type password : \c"
 read password
 sshpass -p $password ssh -q root@$master_ip 'mkdir -p /root/ose'
-sshpass -p $password ssh -q root@$master_ip 'mkdir -p /root/ose'
 
 for file in ./*; do
 #if ([ -f $file ] && [ ${file##*.} != "sh" ]); then

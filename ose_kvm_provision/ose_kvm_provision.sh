@@ -58,7 +58,7 @@ if [[ "$c_mode" == "clone" ]]; then
         # Attach a new disk for docker-pool to node vm
         if [[ $vm =~ "node" ]]; then
           #qemu-img create -f qcow2 myRHELVM1-disk2.qcow2 7G
-          sudo dd if=/dev/zero of=$VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" bs=1M count=1024
+          sudo dd if=/dev/zero of=$VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" bs=1M count=10240
           sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb --live --persistent
           #sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb 
         fi
@@ -90,6 +90,7 @@ elif [[ "$c_mode" == "info" ]]; then
     PUBLIC_START_IP=$((PUBLIC_START_IP+1))
    done
 #To-do
+# 1. template parameter is needed to overwrite default yaml file.
 elif [[ "$c_mode" == "template" ]]; then
   export INVENTORY_FILE
   if [[ "$c_arch" == "max" ]]; then
