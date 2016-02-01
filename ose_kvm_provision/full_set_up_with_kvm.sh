@@ -39,7 +39,13 @@ cp ansible-ose3-install/shell/setup.sh .
 cd ./rhep-tools/ose_kvm_provision/
 ./ose_kvm_provision.sh -mode=clone -arch=$c_arch
 echo Please wait to be stable...
-sleep 5
+for i in {40..1}; 
+do
+  echo -n "${i}.. "
+  sleep 1
+done
+echo "OK MOVE ON"
+#sleep 40
 rm -rf ./*.txt
 rm -rf ./*yaml
 
