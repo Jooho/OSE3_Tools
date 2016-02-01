@@ -52,7 +52,7 @@ nfs_iscsi_host_ip="%INFRA_PUBLIC_IP%"     #default:infra
 #                                         Note) It needs you to attach block device to each node before executing this script.
 #         docker_options - This is for docker option in /etc/sysconfig/docker file
 docker_setup=true
-docker_storage_block_dev_name="vdb"
+docker_storage_block_dev_name="vda"
 docker_options="--insecure-registry 172.30.0.0/16"
 
 # If you would like to register your server to system, you should provide Red Hat id/password.
