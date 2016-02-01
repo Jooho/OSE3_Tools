@@ -1,8 +1,8 @@
 export BASE_VM="RHEL_7U1"
 export VM_PATH="/home/jooho/dev/REDHAT_VM"
-export MAX_ARCH="master1 master2 master3 node1 node2 node3 etcd1 etcd2 etcd3 infra lb"
-export MIN_ARCH="master1 node1 node2 infra"
-export MID_ARCH="master1 master2 master3 node1 node2 node3 node4 node5 infra lb"
+export MAX_ARCH="infra lb master1 master2 master3 node1 node2 node3 etcd1 etcd2 etcd3 "
+export MIN_ARCH="infra master1 node1 node2 "
+export MID_ARCH="infra lb master1 master2 master3 node1 node2 node3 node4 node5 "
 export PUBLIC_IP_C_LEVEL="192.168.200"   #Depend on bridge ip range
 export PUBLIC_START_IP=100
 export vms
@@ -58,7 +58,7 @@ if [[ "$c_mode" == "clone" ]]; then
         # Attach a new disk for docker-pool to node vm
         if [[ $vm =~ "node" ]]; then
           #qemu-img create -f qcow2 myRHELVM1-disk2.qcow2 7G
-          sudo dd if=/dev/zero of=$VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" bs=1M count=1024
+          sudo dd if=/dev/zero of=$VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" bs=1M count=10240
           sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb --live --persistent
           #sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb 
         fi
