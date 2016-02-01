@@ -1,7 +1,6 @@
 [OSE3_INSTALL:children]
 masters
 nodes
-etcd
 lb
 infra
 
@@ -143,26 +142,6 @@ set_network=true
 mgmt_network_dev_name=ens3
 # Note!! It is important variable. If you misconfigure it, the node systems' network could be broken. Hence, please double-check the device is for node_public_network
 public_network_dev_name=ens8
-
-
-[etcd]
-master1.example.com 
-master2.example.com
-master3.example.com 
-
-[etcd:vars]
-# It will help change hostname of each etcd system.
-set_hostname=no
-
-# It will help set up network configuration of each etcd system.
-set_network=true
-# Note!! It is important variable. If you misconfigure it, the etcd systems' network could be broken. Hence, please
-# double-check the device is for etcd_mgmt_network
-mgmt_network_dev_name=ens3
-# Note!! It is important variable. If you misconfigure it, the node systems' network could be broken. Hence, please
-# double-check the device is for etcd_public_network
-public_network_dev_name=ens8
-
 
 
 # Specify load balancer host
