@@ -22,7 +22,6 @@ else
   git clone https://github.com/Jooho/ansible-ose3-install
 fi  
 
-ls $PWD/rhep-tools
 if [[ -e ./rhep-tools ]]; then
   echo "* rhep-tools is already cloned so I will pull it"
   cd ./rhep-tools; git pull; cd .. 

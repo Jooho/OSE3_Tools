@@ -1,8 +1,8 @@
 export BASE_VM="RHEL_7U1"
 export VM_PATH="/home/jooho/dev/REDHAT_VM"
-export MAX_ARCH="infra lb master1 master2 master3 etcd1 etcd2 etcd3 node1 node2 node3"
-export MID_ARCH="infra lb master1 master2 master3 node1 node2 node3 node4 node5 "
-export MIN_ARCH="infra master1 node1 node2 "
+export MAX_ARCH="master1 master2 master3 etcd1 etcd2 etcd3 node1 node2 node3 infra lb"
+export MID_ARCH="master1 master2 master3 node1 node2 node3 node4 node5 infra"
+export MIN_ARCH="master1 node1 node2 infra"
 export NODE_NEW_DEV_SIZE=5120  #1024/5120/10240 ==> 1G/5G/11G
 export INFRA_NEW_DEV_SIZE=10240  #1024/5120/10240 ==> 1G/5G/11G, this will be used for NFS
 export PUBLIC_IP_C_LEVEL="192.168.200"   #Depend on bridge ip range
