@@ -1,9 +1,11 @@
-###Installation
-#### Step 1: **Change essencial parameters accorinding to your environment.**
+### Installation
+
+#### Step 1: Change essencial parameters accorinding to your environment.
 
 ose_kvm_provision.sh
 
 ~~~
+
  # The name of base name which will be cloned.
 export BASE_VM="RHEL_7U1"
 
@@ -26,16 +28,16 @@ export ISO_PATH=/home/jooho/dev/OSE_REPO_ISO/rhel7u1_ose3u1_151125
 ~~~
 
 
-#### Step 2 : **1. Check files**
+#### Step 2 : Check files
 
 ~~~
- # ls -al
+# ls -al
 -rwxrwxr-x  1 jooho jooho 2.5K Jan 31 21:18 full_set_up_with_kvm.sh*
 -rw-r--r--  1 jooho jooho 217M Feb  1 17:47 ose-3.1-x86_64-151125.iso
 -rw-r--r--  1 jooho jooho 3.7G Feb  1 17:47 rhel-server-7.1-x86_64-151125.iso
 ~~~
 
-#### Step 3 : **Execute full_set_up_with_kvm.sh (refer [README.md](https://github.com/Jooho/rhep-tools))**
+#### Step 3 : Execute full_set_up_with_kvm.sh   (refer [README.md](https://github.com/Jooho/rhep-tools))
 
 ~~~
 ./full_set_with_kvm.sh max
@@ -80,7 +82,7 @@ Last login: Sat Jan  9 16:03:41 2016
 [root@localhost ~]#     
 ~~~
 
-#### Step 4 : **Execute ansible-ose3-script on master 1 server.**
+#### Step 4 : Execute ansible-ose3-script on master 1 server.
 
 ~~~
 [root@localhost ~]# cd ose;./setup.sh production-master-ha-etcd-ha-lb.yaml
