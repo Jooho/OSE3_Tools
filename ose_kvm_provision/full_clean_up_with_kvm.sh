@@ -15,7 +15,7 @@ fi
 #Create KVM VMs according to architecture
 cd ./rhep-tools/ose_kvm_provision/
 ./ose_kvm_provision.sh -mode=clean -arch=$c_arch
-./ose_kvm_provision.sh -mode=force -arch=$c_arch
+#./ose_kvm_provision.sh -mode=force -arch=$c_arch
 
 exist=1
 while [[ exist -gt 0 ]]
