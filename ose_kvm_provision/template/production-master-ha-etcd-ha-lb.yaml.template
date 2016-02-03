@@ -33,13 +33,15 @@ proxy_host_ip="192.168.259.200" #default:infra
 
 # This internal_repository using apache is useful if the site is not available to use internet. If 'internet_connected' set false, internal repository will be installed by default.
 internal_repo_install=true
-internal_repo_host_ip="%INFRA_PUBLIC_IP"
+internal_repo_host_ip="%INFRA_PUBLIC_IP%"
 internal_repo_host_name="internal-repo.example.com"
 internal_repo_iso_src_path=/root/ose
 #internal_repo_iso_dest_path=/root/iso
-internal_repo_rhel_iso_long="rhel-server-7.1-x86_64-151125.iso"
+internal_repo_rhel_iso_long="%RHEL_ISO_FILE%"
+#internal_repo_rhel_iso_long="rhel-server-7.1-x86_64-151125.iso"
 internal_repo_rhel_iso_short="rhel71"
-internal_repo_ose_iso_long="ose-3.1-x86_64-151125.iso"
+internal_repo_ose_iso_long="%OSE_ISO_FILE%"
+#internal_repo_ose_iso_long="ose-3.1-x86_64-151125.iso"
 internal_repo_ose_iso_short="ose31"
 internal_repo_apache_repo_path="/var/www/html/repo"
 

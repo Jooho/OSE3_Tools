@@ -3,6 +3,7 @@ export VM_PATH="/home/jooho/dev/REDHAT_VM"
 export MAX_ARCH="infra lb master1 master2 master3 etcd1 etcd2 etcd3 node1 node2 node3"
 export MID_ARCH="infra lb master1 master2 master3 node1 node2 node3 node4 node5 "
 export MIN_ARCH="infra master1 node1 node2 "
+export ISO_PATH=/home/jooho/dev/OSE_REPO_ISO/rhel7u1_ose3u1_151125
 export NODE_NEW_DEV_SIZE=5120  #1024/5120/10240 ==> 1G/5G/11G
 export INFRA_NEW_DEV_SIZE=10240  #1024/5120/10240 ==> 1G/5G/11G, this will be used for NFS
 export PUBLIC_IP_C_LEVEL="192.168.200"   #Depend on bridge ip range
@@ -120,6 +121,18 @@ elif [[ "$c_mode" == "template" ]]; then
     sed -e "s/%${vm^^}_PUBLIC_IP%/$(cat $INFO_FILE|grep ${vm^^}_PUBLIC_IP|cut -d'=' -f2)/g" -i ./${INVENTORY_FILE}
     sed -e "s/%${vm^^}_PUBLIC_GW_IP%/$(cat $INFO_FILE|grep ${vm^^}_PUBLIC_GW_IP|cut -d'=' -f2)/g" -i ./${INVENTORY_FILE}
   done
+  
+  # Check if there are iso files for rhel, ose
+  export OSE_ISO_FILE=$(ls $ISO_PATH |grep ose)
+  export RHEL_ISO_FILE=$(ls $ISO_PATH |grep rhel)
+
+  if [[ z$OSE_ISO_FILE != z ]] || [ z$RHEL_ISO_FILE != z ]]; then
+    sed -e "s/%OSE_ISO_FILE%/${OSE_ISO_FILE}/g" -i ./${INVENTORY_FILE}
+    sed -e "s/%RHEL_ISO_FILE%/${RHEL_ISO_FILE}/g" -i ./${INVENTORY_FILE}
+  else
+    echo " You need to set ISO_PATH variable in full_set_up_with_kvm.sh"
+    exit 1
+  fi
 
 elif [[ "$c_mode" == "clean" ]]; then
     for vm in $vms; do
