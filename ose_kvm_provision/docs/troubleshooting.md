@@ -2,7 +2,7 @@
 
 **Case 1. During installation by ose3-ansible, it fails with following error**
 
-*Error*
+*Error logs*
 ~~~
 TASK: [openshift_master | Start and enable master api] ************************
 <192.168.124.137> ESTABLISH CONNECTION FOR USER: root
@@ -46,10 +46,11 @@ PLAY RECAP ********************************************************************
 *Resolution*
 
 Check etcd service on each etcd server and if you see error message to look up etcd member, delete member data.
-Then restart setup.sh 
+Then re-execute setup.sh 
 
 Example:
-fix etcd data
+
+1.fix etcd data
 ~~~
   # ssh master1.example.com
   # journalctl -f -u etcd.service
@@ -62,7 +63,7 @@ fix etcd data
   # systemctl start etcd
 ~~~  
 
-On Master1 server, execute setup.sh again.
+2.On Master1 server, execute setup.sh again.
 ~~~
 [root@master1 ose]# ./setup.sh ./production-master-ha-etcd-ha-lb.yaml
 Do you want to go through from the beginning?(y/n) (or just start to install)
