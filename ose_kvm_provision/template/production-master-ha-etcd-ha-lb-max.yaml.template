@@ -9,14 +9,10 @@ infra
 ansible_ssh_user=root
 
 # Check if it is possible to reach to internet. If it is not, internal repository using apache will be installed by default but you can overwrite it with 'internal_repo_install'.
-internet_connected=false  
+internet_connected=true
 
 # This variable allow you to overwrite hosts file forcely. Once hosts file is updated, it never try to update the file even though you execute this script again by default. 
 overwrite_hosts_file=true
-
-##will be deleted
-# If internet_connected is false, you need archieved openshift-ansible because it is not possible to clone the github.
-openshift_ansible_path=/home/jooho
 
 # This DNS server using bind will be installed and the wildcard card entry configuration will be applied.
 dns_install=true
@@ -25,27 +21,24 @@ dns_routers_ip=%NODE1_PUBLIC_IP%
 dns_host_ip="%INFRA_PUBLIC_IP%"
 #external_dns_ip="10.64.255.25"
 
-##will be deleted
-# This proxy server using haproxy play an role in vip for multiple routers  (To-Do : image) In production, it would be changed L4 machine.
-proxy_install=false
-proxy_vip="192.168.259.201"    
-proxy_host_ip="192.168.259.200" #default:infra
-
 # This internal_repository using apache is useful if the site is not available to use internet. If 'internet_connected' set false, internal repository will be installed by default.
 internal_repo_install=true
-internal_repo_host_ip="%INFRA_PUBLIC_IP"
-internal_repo_host_name="internal-repo.example.com"
+internal_repo_host_ip="%INFRA_PUBLIC_IP%"
+internal_repo_host_name="infra.example.com"
 internal_repo_iso_src_path=/root/ose
 #internal_repo_iso_dest_path=/root/iso
-internal_repo_rhel_iso_long="rhel-server-7.1-x86_64-151125.iso"
+internal_repo_rhel_iso_long="%RHEL_ISO_FILE%"
 internal_repo_rhel_iso_short="rhel71"
-internal_repo_ose_iso_long="ose-3.1-x86_64-151125.iso"
+internal_repo_ose_iso_long="%OSE_ISO_FILE%"
 internal_repo_ose_iso_short="ose31"
 internal_repo_apache_repo_path="/var/www/html/repo"
 
 # This NFS/iscsi server is for testing PV and docker-registory-storage hence I strongly disagee that you use it in Production. Only use it for Test environment.
-nfs_iscsi_install=false
+nfs_iscsi_install=true
 nfs_iscsi_host_ip="%INFRA_PUBLIC_IP%"     #default:infra
+nfs_block_dev_name="vda"
+
+
 
 # Docker setup 
 #         docker_storage_block_dev_name - docker use loop back device but it does not recommend in production so this value will allow docker use block device.
@@ -57,7 +50,7 @@ docker_options="--insecure-registry 172.30.0.0/16"
 
 # If you would like to register your server to system, you should provide Red Hat id/password.
 #      Condition(this must be set) -> internet_connected=true, internal_repo_install=false
-subscription_register=false
+subscription_register=fasle
 subscription_register_name=test
 subscription_register_password=test
 subscription_register_pool_id=8a85f9813cf493fe013d028b6cf75b5a
@@ -65,9 +58,6 @@ subscription_register_pool_id=8a85f9813cf493fe013d028b6cf75b5a
 # If you use this script for testing environment, please set this true. Then you can set more infra environment using ansible.
 # This varible will effect -> network
 development=true
-
-## will be deleted
-openshift_ansible_tar=false
 
 deployment_type=openshift-enterprise
 
@@ -109,7 +99,7 @@ openshift_master_cluster_public_hostname=lb.example.com
 # openshift_public_ip : external ip
 #
 [masters]
-master1.example.com ansible_ssh_host=%MASTER1_PRIVATE_IP% mgmt_network_ip=%MASTER1_PRIVATE_IP% public_network_ip=%MASTER1_PUBLIC_IP% public_network_gw=%MASTER1_PUBLIC_GW_IP%  is_node=false openshift_public_hostname=master1.example.com openshift_hostname=master1.example.com openshift_ip=%MASTER1_PUBLIC_IP% openshift_public_ip=%MASTER1_PUBLIC_IP%
+master1.example.com ansible_ssh_host=%MASTER1_PRIVATE_IP% mgmt_network_ip=%MASTER1_PRIVATE_IP% public_network_ip=%MASTER1_PUBLIC_IP% public_network_gw=%MASTER1_PUBLIC_GW_IP%  is_node=true openshift_public_hostname=master1.example.com openshift_hostname=master1.example.com openshift_ip=%MASTER1_PUBLIC_IP% openshift_public_ip=%MASTER1_PUBLIC_IP%
 master2.example.com ansible_ssh_host=%MASTER2_PRIVATE_IP% mgmt_network_ip=%MASTER2_PRIVATE_IP% public_network_ip=%MASTER2_PUBLIC_IP% public_network_gw=%MASTER2_PUBLIC_GW_IP%  is_node=false openshift_public_hostname=master2.example.com openshift_hostname=master2.example.com openshift_ip=%MASTER2_PUBLIC_IP% openshift_public_ip=%MASTER2_PUBLIC_IP%
 master3.example.com ansible_ssh_host=%MASTER3_PRIVATE_IP% mgmt_network_ip=%MASTER3_PRIVATE_IP% public_network_ip=%MASTER3_PUBLIC_IP% public_network_gw=%MASTER3_PUBLIC_GW_IP%  is_node=false openshift_public_hostname=master3.example.com openshift_hostname=master3.example.com openshift_ip=%MASTER3_PUBLIC_IP% openshift_public_ip=%MASTER3_PUBLIC_IP%
 
@@ -126,11 +116,9 @@ public_network_dev_name=ens8
 
 
 [nodes]
-node1.example.com ansible_ssh_host=%NODE1_PRIVATE_IP% mgmt_network_ip=%NODE1_PRIVATE_IP% public_network_ip=%NODE1_PUBLIC_IP% public_network_gw=%NODE1_PUBLIC_GW_IP% openshift_node_labels="{'region': 'base', 'zone': 'infra'}" openshift_public_hostname=node1.example.com openshift_hostname=node1.example.com openshift_ip=%NODE1_PUBLIC_IP% openshift_public_ip=%NODE1_PUBLIC_IP%
-node2.example.com ansible_ssh_host=%NODE2_PRIVATE_IP% mgmt_network_ip=%NODE2_PRIVATE_IP% public_network_ip=%NODE2_PUBLIC_IP% public_network_gw=%NODE2_PUBLIC_GW_IP% openshift_node_labels="{'region': 'base', 'zone': 'infra'}" openshift_public_hostname=node2.example.com openshift_hostname=node2.example.com openshift_ip=%NODE2_PUBLIC_IP% openshift_public_ip=%NODE2_PUBLIC_IP%
-node3.example.com ansible_ssh_host=%NODE3_PRIVATE_IP% mgmt_network_ip=%NODE3_PRIVATE_IP% public_network_ip=%NODE3_PUBLIC_IP% public_network_gw=%NODE3_PUBLIC_GW_IP% openshift_node_labels="{'region': 'primary', 'zone': 'east'}" openshift_public_hostname=node3.example.com openshift_hostname=node3.example.com openshift_ip=%NODE3_PUBLIC_IP% openshift_public_ip=%NODE3_PUBLIC_IP%
-node4.example.com ansible_ssh_host=%NODE4_PRIVATE_IP% mgmt_network_ip=%NODE4_PRIVATE_IP% public_network_ip=%NODE4_PUBLIC_IP% public_network_gw=%NODE4_PUBLIC_GW_IP% openshift_node_labels="{'region': 'primary', 'zone': 'mid'}" openshift_public_hostname=node4.example.com openshift_hostname=node4.example.com openshift_ip=%NODE4_PUBLIC_IP% openshift_public_ip=%NODE4_PUBLIC_IP%
-node5.example.com ansible_ssh_host=%NODE5_PRIVATE_IP% mgmt_network_ip=%NODE5_PRIVATE_IP% public_network_ip=%NODE5_PUBLIC_IP% public_network_gw=%NODE5_PUBLIC_GW_IP% openshift_node_labels="{'region': 'primary', 'zone': 'west'}" openshift_public_hostname=node5.example.com openshift_hostname=node5.example.com openshift_ip=%NODE5_PUBLIC_IP% openshift_public_ip=%NODE5_PUBLIC_IP%
+node1.example.com ansible_ssh_host=%NODE1_PRIVATE_IP% mgmt_network_ip=%NODE1_PRIVATE_IP% public_network_ip=%NODE1_PUBLIC_IP% public_network_gw=%NODE1_PUBLIC_GW_IP% openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_public_hostname=node1.example.com openshift_hostname=node1.example.com openshift_ip=%NODE1_PUBLIC_IP% openshift_public_ip=%NODE1_PUBLIC_IP%
+node2.example.com ansible_ssh_host=%NODE2_PRIVATE_IP% mgmt_network_ip=%NODE2_PRIVATE_IP% public_network_ip=%NODE2_PUBLIC_IP% public_network_gw=%NODE2_PUBLIC_GW_IP% openshift_node_labels="{'region': 'primary', 'zone': 'east'}" openshift_public_hostname=node2.example.com openshift_hostname=node2.example.com openshift_ip=%NODE2_PUBLIC_IP% openshift_public_ip=%NODE2_PUBLIC_IP%
+node3.example.com ansible_ssh_host=%NODE3_PRIVATE_IP% mgmt_network_ip=%NODE3_PRIVATE_IP% public_network_ip=%NODE3_PUBLIC_IP% public_network_gw=%NODE3_PUBLIC_GW_IP% openshift_node_labels="{'region': 'primary', 'zone': 'west'}" openshift_public_hostname=node3.example.com openshift_hostname=node3.example.com openshift_ip=%NODE3_PUBLIC_IP% openshift_public_ip=%NODE3_PUBLIC_IP%
 
 
 [nodes:vars]
@@ -145,25 +133,23 @@ mgmt_network_dev_name=ens3
 public_network_dev_name=ens8
 
 
+
 [etcd]
-master1.example.com 
-master2.example.com
-master3.example.com 
+etcd1.example.com ansible_ssh_host=%ETCD1_PRIVATE_IP%  mgmt_network_ip=%ETCD1_PRIVATE_IP% public_network_ip=%ETCD1_PUBLIC_IP%  public_network_gw=%ETCD1_PUBLIC_GW_IP% openshift_public_hostname=etcd1.example.com openshift_hostname=etcd1.example.com openshift_ip=%ETCD1_PUBLIC_IP% openshift_public_ip=%ETCD1_PUBLIC_IP%
+etcd2.example.com ansible_ssh_host=%ETCD2_PRIVATE_IP%  mgmt_network_ip=%ETCD2_PRIVATE_IP% public_network_ip=%ETCD2_PUBLIC_IP%  public_network_gw=%ETCD2_PUBLIC_GW_IP% openshift_public_hostname=etcd2.example.com openshift_hostname=etcd2.example.com openshift_ip=%ETCD2_PUBLIC_IP% openshift_public_ip=%ETCD2_PUBLIC_IP%
+etcd3.example.com ansible_ssh_host=%ETCD3_PRIVATE_IP%  mgmt_network_ip=%ETCD3_PRIVATE_IP% public_network_ip=%ETCD3_PUBLIC_IP%  public_network_gw=%ETCD3_PUBLIC_GW_IP% openshift_public_hostname=etcd3.example.com openshift_hostname=etcd3.example.com openshift_ip=%ETCD3_PUBLIC_IP% openshift_public_ip=%ETCD3_PUBLIC_IP%
+
 
 [etcd:vars]
 # It will help change hostname of each etcd system.
-set_hostname=no
+set_hostname=true
 
 # It will help set up network configuration of each etcd system.
 set_network=true
-# Note!! It is important variable. If you misconfigure it, the etcd systems' network could be broken. Hence, please
-# double-check the device is for etcd_mgmt_network
+# Note!! It is important variable. If you misconfigure it, the etcd systems' network could be broken. Hence, please double-check the device is for etcd_mgmt_network
 mgmt_network_dev_name=ens3
-# Note!! It is important variable. If you misconfigure it, the node systems' network could be broken. Hence, please
-# double-check the device is for etcd_public_network
+# Note!! It is important variable. If you misconfigure it, the node systems' network could be broken. Hence, please double-check the device is for etcd_public_network
 public_network_dev_name=ens8
-
-
 
 # Specify load balancer host
 [lb]

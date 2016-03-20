@@ -23,27 +23,22 @@ dns_routers_ip=%NODE1_PRIVATE_IP%
 dns_host_ip="%INFRA_PRIVATE_IP%"
 #external_dns_ip="10.64.255.25"
 
-##will be deleted
-# This proxy server using haproxy play an role in vip for multiple routers  (To-Do : image) In production, it would be changed L4 machine.
-proxy_install=false
-proxy_vip="192.168.259.201"    
-proxy_host_ip="192.168.259.200" #default:infra
-
 # This internal_repository using apache is useful if the site is not available to use internet. If 'internet_connected' set false, internal repository will be installed by default.
 internal_repo_install=true
 internal_repo_host_ip="%INFRA_PRIVATE_IP%"
-internal_repo_host_name="internal-repo.example.com"
+internal_repo_host_name="infra.example.com"
 internal_repo_iso_src_path=/root/ose
 #internal_repo_iso_dest_path=/root/iso
-internal_repo_rhel_iso_long="rhel-server-7.1-x86_64-201602025.iso"
+internal_repo_rhel_iso_long="%RHEL_ISO_FILE%"
 internal_repo_rhel_iso_short="rhel71"
-internal_repo_ose_iso_long="ose-3.1-x86_64-20160202.iso"
+internal_repo_ose_iso_long="%OSE_ISO_FILE%"
 internal_repo_ose_iso_short="ose31"
 internal_repo_apache_repo_path="/var/www/html/repo"
 
 # This NFS/iscsi server is for testing PV and docker-registory-storage hence I strongly disagee that you use it in Production. Only use it for Test environment.
 nfs_iscsi_install=false
 nfs_iscsi_host_ip="%INFRA_PRIVATE_IP%"     #default:infra
+nfs_block_dev_name="vda"
 
 # Docker setup 
 #         docker_storage_block_dev_name - docker use loop back device but it does not recommend in production so this value will allow docker use block device.
@@ -63,9 +58,6 @@ subscription_register_pool_id=8a85f9813cf493fe013d028b6cf75b5a
 # If you use this script for testing environment, please set this true. Then you can set more infra environment using ansible.
 # This varible will effect -> network
 development=true
-
-## will be deleted
-openshift_ansible_tar=false
 
 deployment_type=openshift-enterprise
 
