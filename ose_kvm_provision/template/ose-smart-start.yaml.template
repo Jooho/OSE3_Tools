@@ -9,7 +9,7 @@ infra
 ansible_ssh_user=root
 
 # Check if it is possible to reach to internet. If it is not, internal repository using apache will be installed by default but you can overwrite it with 'internal_repo_install'.
-internet_connected=true
+internet_connected=false
 
 # This variable allow you to overwrite hosts file forcely. Once hosts file is updated, it never try to update the file even though you execute this script again by default. 
 overwrite_hosts_file=true
@@ -22,7 +22,7 @@ dns_host_ip="%INFRA_PUBLIC_IP%"
 #external_dns_ip="10.64.255.25"
 
 # This internal_repository using apache is useful if the site is not available to use internet. If 'internet_connected' set false, internal repository will be installed by default.
-internal_repo_install=true
+internal_repo_install=false
 internal_repo_host_ip="%INFRA_PUBLIC_IP%"
 internal_repo_host_name="infra.example.com"
 internal_repo_iso_src_path=/root/ose
@@ -36,7 +36,7 @@ internal_repo_apache_repo_path="/var/www/html/repo"
 # This NFS/iscsi server is for testing PV and docker-registory-storage hence I strongly disagee that you use it in Production. Only use it for Test environment.
 nfs_iscsi_install=true
 nfs_iscsi_host_ip="%INFRA_PUBLIC_IP%"     #default:infra
-nfs_block_dev_name="vda"
+nfs_block_dev_name="vdb"
 
 # Docker setup 
 #         docker_storage_block_dev_name - docker use loop back device but it does not recommend in production so this value will allow docker use block device.
@@ -49,8 +49,8 @@ docker_options="--insecure-registry 172.30.0.0/16"
 # If you would like to register your server to system, you should provide Red Hat id/password.
 #      Condition(this must be set) -> internet_connected=true, internal_repo_install=false
 subscription_register=true
-subscription_register_name="rhn-support-jlee"
-subscription_register_password="'dlwnghABC!!22'"
+subscription_register_name="test"
+subscription_register_password="'test'"
 subscription_register_pool_id=8a85f9813cf493fe013d028b6cf75b5a
 
 # If you use this script for testing environment, please set this true. Then you can set more infra environment using ansible.
