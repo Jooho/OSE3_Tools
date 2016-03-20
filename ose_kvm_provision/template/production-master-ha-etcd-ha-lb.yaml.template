@@ -38,16 +38,17 @@ internal_repo_host_name="internal-repo.example.com"
 internal_repo_iso_src_path=/root/ose
 #internal_repo_iso_dest_path=/root/iso
 internal_repo_rhel_iso_long="%RHEL_ISO_FILE%"
-#internal_repo_rhel_iso_long="rhel-server-7.1-x86_64-151125.iso"
 internal_repo_rhel_iso_short="rhel71"
 internal_repo_ose_iso_long="%OSE_ISO_FILE%"
-#internal_repo_ose_iso_long="ose-3.1-x86_64-151125.iso"
 internal_repo_ose_iso_short="ose31"
 internal_repo_apache_repo_path="/var/www/html/repo"
 
 # This NFS/iscsi server is for testing PV and docker-registory-storage hence I strongly disagee that you use it in Production. Only use it for Test environment.
 nfs_iscsi_install=false
 nfs_iscsi_host_ip="%INFRA_PUBLIC_IP%"     #default:infra
+nfs_block_dev_name="vda"
+
+
 
 # Docker setup 
 #         docker_storage_block_dev_name - docker use loop back device but it does not recommend in production so this value will allow docker use block device.
@@ -111,7 +112,7 @@ openshift_master_cluster_public_hostname=lb.example.com
 # openshift_public_ip : external ip
 #
 [masters]
-master1.example.com ansible_ssh_host=%MASTER1_PRIVATE_IP% mgmt_network_ip=%MASTER1_PRIVATE_IP% public_network_ip=%MASTER1_PUBLIC_IP% public_network_gw=%MASTER1_PUBLIC_GW_IP%  is_node=false openshift_public_hostname=master1.example.com openshift_hostname=master1.example.com openshift_ip=%MASTER1_PUBLIC_IP% openshift_public_ip=%MASTER1_PUBLIC_IP%
+master1.example.com ansible_ssh_host=%MASTER1_PRIVATE_IP% mgmt_network_ip=%MASTER1_PRIVATE_IP% public_network_ip=%MASTER1_PUBLIC_IP% public_network_gw=%MASTER1_PUBLIC_GW_IP%  is_node=true openshift_public_hostname=master1.example.com openshift_hostname=master1.example.com openshift_ip=%MASTER1_PUBLIC_IP% openshift_public_ip=%MASTER1_PUBLIC_IP%
 master2.example.com ansible_ssh_host=%MASTER2_PRIVATE_IP% mgmt_network_ip=%MASTER2_PRIVATE_IP% public_network_ip=%MASTER2_PUBLIC_IP% public_network_gw=%MASTER2_PUBLIC_GW_IP%  is_node=false openshift_public_hostname=master2.example.com openshift_hostname=master2.example.com openshift_ip=%MASTER2_PUBLIC_IP% openshift_public_ip=%MASTER2_PUBLIC_IP%
 master3.example.com ansible_ssh_host=%MASTER3_PRIVATE_IP% mgmt_network_ip=%MASTER3_PRIVATE_IP% public_network_ip=%MASTER3_PUBLIC_IP% public_network_gw=%MASTER3_PUBLIC_GW_IP%  is_node=false openshift_public_hostname=master3.example.com openshift_hostname=master3.example.com openshift_ip=%MASTER3_PUBLIC_IP% openshift_public_ip=%MASTER3_PUBLIC_IP%
 

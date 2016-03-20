@@ -4,8 +4,8 @@ export ISO_PATH="/home/jooho/dev/OSE_REPO_ISO/rhel7u1_ose3u1_151125"
 export MAX_ARCH="master1 master2 master3 etcd1 etcd2 etcd3 node1 node2 node3 infra lb"
 export MID_ARCH="master1 master2 master3 node1 node2 node3 node4 node5 infra"
 export MIN_ARCH="master1 node1 node2 infra"
-export NODE_NEW_DEV_SIZE=5120  #1024/5120/10240 ==> 1G/5G/11G
-export INFRA_NEW_DEV_SIZE=10240  #1024/5120/10240 ==> 1G/5G/11G, this will be used for NFS
+export NODE_NEW_DEV_SIZE=2048  #1024/5120/10240 ==> 1G/5G/11G
+export INFRA_NEW_DEV_SIZE=2048  #1024/5120/10240 ==> 1G/5G/11G, this will be used for NFS
 export PUBLIC_IP_C_LEVEL="192.168.200"   #Depend on bridge ip range
 export PUBLIC_START_IP=100
 export vms
@@ -54,9 +54,9 @@ if [[ "$c_mode" == "clone" ]]; then
         sudo virsh start $BASE_VM"_ose31_"$c_arch"_"$vm
 
         # Attach a new network interface for public ip
-        echo sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --target eth${ETH_NUM} --model virtio --config --live
+        #echo sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --target eth${ETH_NUM} --model virtio --config --live
         #sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --target eth${ETH_NUM} --model virtio --config --live
-        sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --config --live
+        #sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source br1 --config --live
 
         # Attach a new disk for docker-pool to node vm
         if [[ $vm =~ "node" ]]; then
@@ -72,6 +72,7 @@ if [[ "$c_mode" == "clone" ]]; then
           sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb --live --persistent 
           #sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb 
         fi
+        sleep 3
   done
   sudo virsh list
 # Usage :
@@ -111,7 +112,7 @@ elif [[ "$c_mode" == "template" ]]; then
   elif [[ "$c_arch" == "mid" ]]; then
     INVENTORY_FILE=production-master-ha-lb.yaml
   else
-    INVENTORY_FILE=production-master-ha-etcd-ha-lb.yaml
+    INVENTORY_FILE=production-master-2node.yaml
   fi
 
   cp ./template/${INVENTORY_FILE}.template ./${INVENTORY_FILE}
@@ -138,16 +139,26 @@ elif [[ "$c_mode" == "clean" ]]; then
     for vm in $vms; do
       sudo virsh shutdown $BASE_VM"_ose31_"$c_arch"_"$vm
       if [[ $vm =~ "node" ]]; then
-        #sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2"
+       #sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2"
        sudo  rm -rf $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2"
       fi
 
-      sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm".qcow2"
-      sudo virsh undefine $BASE_VM"_ose31_"$c_arch"_"$vm 
+      if [[ $vm =~ "infra" ]]; then
+        echo "Do you want to delete infra vm?(y/n)"
+        read delete_vm
+        if [[ $delete_vm == "y" ]]; then
+          sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm".qcow2"
+        else
+          echo "infra remain"
+        fi
+      else
+        sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm".qcow2"
+        sudo virsh undefine $BASE_VM"_ose31_"$c_arch"_"$vm 
+      fi
     done
 
 elif [[ "$c_mode" == "force" ]]; then
-  sudo rm -rf $VM_PATH/*ose*
+  sudo rm -rf $VM_PATH/*${c_arch}*
 else
   echo "Unknown mode - please select one of clone,info,clean,force"
 fi
