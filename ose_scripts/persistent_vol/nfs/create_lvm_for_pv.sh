@@ -30,6 +30,7 @@ cat << EOF
      => w
 EOF
 exit 0
+
 else
    echo "Create pv : /dev/${NFS_BLOCK_DEV}5"
    pv_exist=$(pvs|grep /dev/${NFS_BLOCK_DEV}5|wc -l)

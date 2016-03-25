@@ -4,6 +4,7 @@
 function create_pv_script(){
   #VOL_NAME=${PV_NAME_PREFIX}${c}
   VOL_NAME=$1
+  LVM_VOL_NAME=$2
 cat << EOF > ${PV_SCRIPT_PATH}/${VOL_NAME}
      apiVersion: "v1"
      kind: "PersistentVolume"
@@ -15,7 +16,7 @@ cat << EOF > ${PV_SCRIPT_PATH}/${VOL_NAME}
        accessModes:
          - "ReadWriteMany"
        nfs:
-         path: "${NFS_MOUNT_PATH}/${VOL_NAME}"
+         path: "${NFS_MOUNT_PATH}/${LVM_VOL_NAME}"
          server: "${NFS_SERVER}"
          persistentVolumeReclaimPolicy: "Recycle"
 EOF
@@ -29,9 +30,9 @@ export created_pv_script
 
 #Check if PV_SCRIPT_PATH is exist. If exist, skip but don't exist, it will create the folder
 if [[ -e ${PV_SCRIPT_PATH} ]]; then
-  echo "${PV_SCIRPT_PATH} is exist so it is not created."
+  echo "${PV_SCRIPT_PATH} exist so it is not created."
 else
-  echo "${PV_SCIRPT_PATH} is not exist so it is created."
+  echo "${PV_SCIRPT_PATH} does not exist so it is created."
   mkdir -p ${PV_SCRIPT_PATH}
 fi
 
@@ -44,15 +45,21 @@ fi
 
 for c in $(seq -f "%0${#PV_NAME_PAD}g" ${PV_RANGE_START} ${PV_RANGE_END})
 do
+  # pv name
   VOL_NAME=${PV_NAME_PREFIX}${c}
-  pv_exist=$(oc get pv |grep  ${VOL_NAME} |wc -l)
 
- if [[ $pv_exist -eq 1 ]]; then
+  #lvm vol name
+  FORMATTED_LVM_SIZE=$(seq -f "%0${#LVM_NAME_SIZE_PAD}g" ${LVM_VOL_SIZE} ${LVM_VOL_SIZE})
+  LVM_VOL_NAME="ose-${NFS_SERVER_TAG}-${LVM_NAME_PREFIX}${FORMATTED_LVM_SIZE}g$c"
+
+  pv_exist=$(oc get pv |grep ${VOL_NAME} |wc -l)
+
+  if [[ $pv_exist == 1 ]]; then
       echo "${VOL_NAME} pv is already created so skip to create the persistent volume!!"
       exist_pv=("${exist_pv[@]}" "${VOL_NAME}")
   else
       echo "Creating ${VOL_NAME} pv script"
-      create_pv_script ${VOL_NAME}
+      create_pv_script ${VOL_NAME} ${LVM_VOL_NAME}
       oc create -f ${PV_SCRIPT_PATH}/${VOL_NAME}
 
       check_pv_is_created=$(oc get pv|grep ${VOL_NAME}|wc -l)
