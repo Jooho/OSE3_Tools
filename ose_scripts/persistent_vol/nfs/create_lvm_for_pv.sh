@@ -76,7 +76,16 @@ do
        exist_nfs_folder=("${exist_nfs_folder[@]}" "${LVM_VOL_NAME}")
    fi
   
-   echo "/dev/ose-${NFS_SERVER_TAG}-vg/${LVM_VOL_NAME} ${NFS_MOUNT_PATH}/${LVM_VOL_NAME}  xfs defaults 0 0" >> /etc/fstab
+   fstab_exist=$(grep ${NFS_MOUNT_PATH}/${LVM_VOL_NAME} /etc/fstab|wc -l)
+   exports_exist=$(grep ${NFS_MOUNT_PATH}/${LVM_VOL_NAME} /etc/exports|wc -l)
+   if [[ $fstab_exist == 0  ]]; then 
+      echo "/dev/ose-${NFS_SERVER_TAG}-vg/${LVM_VOL_NAME} ${NFS_MOUNT_PATH}/${LVM_VOL_NAME}  xfs defaults 0 0" >> /etc/fstab
+   fi
+
+   if [[ $exports_exist == 0 ]]; then
+      echo "${NFS_MOUNT_PATH}/${LVM_VOL_NAME} *(rw,root_squash)" >> /etc/exports
+   fi 
+   systemctl restart nfs
 done
 
 echo ""
@@ -85,6 +94,7 @@ read mount
 if [[ $mount == y ]]; then
    mount -a 
 fi
+
 
 echo ""
 echo ""
