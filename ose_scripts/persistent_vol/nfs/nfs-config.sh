@@ -14,7 +14,8 @@
 # Example
 #  Suppose you want to create ose-infra-pv0010g001 to ose-infra-pv0010g012
 #     LVM_NAME_PREFIX should be pv 
-#     LVM_NAME_PAD should be 000
+#     LVM_NAME_SIZE_PAD should be 0000
+#     LVM_NAME_RANGE_PAD should be 000
 #     LVM_RANGE_START should be 1
 #     LVM_RANGE_END should be 12
 #     LVM_VOL_SIZE should be 10  (without unit 'g')
