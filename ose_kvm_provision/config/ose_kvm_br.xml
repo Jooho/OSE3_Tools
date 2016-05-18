@@ -1,0 +1,13 @@
+<network>
+  <name>ose_br</name>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='vir_ose_br' stp='on' delay='0'/>
+  <domain name='ose_br'/>
+  <ip address='192.168.200.1' netmask='255.255.255.0'>
+  </ip>
+</network>
+
