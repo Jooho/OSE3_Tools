@@ -1,44 +1,47 @@
 [OSE3_INSTALL:children]
 masters
 nodes
+etcd
+lb
 infra
 
 [OSE3_INSTALL:vars]
 ansible_ssh_user=root
 
 # Check if it is possible to reach to internet. If it is not, internal repository using apache will be installed by default but you can overwrite it with 'internal_repo_install'.
-internet_connected=false  
+internet_connected=false
 
 # This variable allow you to overwrite hosts file forcely. Once hosts file is updated, it never try to update the file even though you execute this script again by default. 
 overwrite_hosts_file=true
 
-##will be deleted
-# If internet_connected is false, you need archieved openshift-ansible because it is not possible to clone the github.
-openshift_ansible_path=/home/jooho
+# In order to install proper docker version according to openshift version, this value is needed
+openshift_major_version=3
+openshift_minor_version=2
+openshift_micro_version=0
 
 # This DNS server using bind will be installed and the wildcard card entry configuration will be applied.
 dns_install=true
 dns_wildcard_domain="cloudapps.example.com"
-dns_routers_ip=%NODE1_PRIVATE_IP%
-dns_host_ip="%INFRA_PRIVATE_IP%"
+dns_routers_ip=%NODE1_PUBLIC_IP%
+dns_host_ip="%INFRA_PUBLIC_IP%"
 #external_dns_ip="10.64.255.25"
 
 # This internal_repository using apache is useful if the site is not available to use internet. If 'internet_connected' set false, internal repository will be installed by default.
 internal_repo_install=true
-internal_repo_host_ip="%INFRA_PRIVATE_IP%"
+internal_repo_host_ip="%INFRA_PUBLIC_IP%"
 internal_repo_host_name="infra.example.com"
 internal_repo_iso_src_path=/root/ose
 #internal_repo_iso_dest_path=/root/iso
 internal_repo_rhel_iso_long="%RHEL_ISO_FILE%"
-internal_repo_rhel_iso_short="rhel71"
+internal_repo_rhel_iso_short="rhel72"
 internal_repo_ose_iso_long="%OSE_ISO_FILE%"
 internal_repo_ose_iso_short="ose31"
 internal_repo_apache_repo_path="/var/www/html/repo"
 
 # This NFS/iscsi server is for testing PV and docker-registory-storage hence I strongly disagee that you use it in Production. Only use it for Test environment.
-nfs_iscsi_install=false
-nfs_iscsi_host_ip="%INFRA_PRIVATE_IP%"     #default:infra
-nfs_block_dev_name="vda"
+nfs_iscsi_install=true
+nfs_iscsi_host_ip="%INFRA_PUBLIC_IP%"     #default:infra
+nfs_block_dev_name="vdb"
 
 # Docker setup 
 #         docker_storage_block_dev_name - docker use loop back device but it does not recommend in production so this value will allow docker use block device.
@@ -51,8 +54,8 @@ docker_options="--insecure-registry 172.30.0.0/16"
 # If you would like to register your server to system, you should provide Red Hat id/password.
 #      Condition(this must be set) -> internet_connected=true, internal_repo_install=false
 subscription_register=false
-subscription_register_name=test
-subscription_register_password=test
+subscription_register_name="test"
+subscription_register_password="'test'"
 subscription_register_pool_id=8a85f9813cf493fe013d028b6cf75b5a
 
 # If you use this script for testing environment, please set this true. Then you can set more infra environment using ansible.
@@ -98,22 +101,13 @@ openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 
 # openshift_ip : internal ip (it is normally same as openshift_public_ip)
 # openshift_public_ip : external ip
 #
-[masters]
-master1.example.com ansible_ssh_host=%MASTER1_PRIVATE_IP% mgmt_network_ip=%MASTER1_PRIVATE_IP%  is_node=false openshift_public_hostname=master1.example.com openshift_hostname=master1.example.com openshift_ip=%MASTER1_PRIVATE_IP% openshift_public_ip=%MASTER1_PRIVATE_IP%
-
-[masters:vars]
-# It will help change hostname of each master system.
-set_hostname=true
-
-# It will help set up network configuration of each master system.
-set_network=true
-# Note!! It is important variable. If you misconfigure it, the master systems' network could be broken. Hence, please double-check the device is for master_mgmt_network
-mgmt_network_dev_name=ens3
-
-
 [nodes]
-node1.example.com ansible_ssh_host=%NODE1_PRIVATE_IP% mgmt_network_ip=%NODE1_PRIVATE_IP%  openshift_node_labels="{'region': 'base', 'zone': 'infra'}" openshift_public_hostname=node1.example.com openshift_hostname=node1.example.com openshift_ip=%NODE1_PRIVATE_IP% openshift_public_ip=%NODE1_PRIVATE_IP%
-node2.example.com ansible_ssh_host=%NODE2_PRIVATE_IP% mgmt_network_ip=%NODE2_PRIVATE_IP%  openshift_node_labels="{'region': 'primary', 'zone': 'center'}" openshift_public_hostname=node2.example.com openshift_hostname=node2.example.com openshift_ip=%NODE2_PRIVATE_IP% openshift_public_ip=%NODE2_PRIVATE_IP%
+node1.example.com ansible_ssh_host=%NODE1_PRIVATE_IP% mgmt_network_ip=%NODE1_PRIVATE_IP%
+openshift_node_labels="{'region': 'base', 'zone': 'infra'}" openshift_public_hostname=node1.example.com
+openshift_hostname=node1.example.com openshift_ip=%NODE1_PRIVATE_IP% openshift_public_ip=%NODE1_PRIVATE_IP%
+node2.example.com ansible_ssh_host=%NODE2_PRIVATE_IP% mgmt_network_ip=%NODE2_PRIVATE_IP%
+openshift_node_labels="{'region': 'primary', 'zone': 'center'}" openshift_public_hostname=node2.example.com
+openshift_hostname=node2.example.com openshift_ip=%NODE2_PRIVATE_IP% openshift_public_ip=%NODE2_PRIVATE_IP%
 
 
 [nodes:vars]
@@ -122,13 +116,14 @@ set_hostname=true
 
 # It will help set up network configuration of each node system.
 set_network=true
-# Note!! It is important variable. If you misconfigure it, the node systems' network could be broken. Hence, please double-check the device is for node_mgmt_network
+# Note!! It is important variable. If you misconfigure it, the node systems' network could be broken. Hence, please
+# double-check the device is for node_mgmt_network
 mgmt_network_dev_name=ens3
 
 
 
 [infra]
-infra.example.com ansible_ssh_host=%INFRA_PRIVATE_IP%  mgmt_network_ip=%INFRA_PRIVATE_IP% 
+infra.example.com ansible_ssh_host=%INFRA_PRIVATE_IP%  mgmt_network_ip=%INFRA_PRIVATE_IP%
 
 [infra:vars]
 # It will help change hostname of each infra system.
@@ -136,5 +131,7 @@ set_hostname=true
 
 # It will help set up network configuration of each infra system.
 set_network=true
-# Note!! It is important variable. If you misconfigure it, the infra systems' network could be broken. Hence, please double-check the device is for infra_mgmt_network
+# Note!! It is important variable. If you misconfigure it, the infra systems' network could be broken. Hence, please
+# double-check the device is for infra_mgmt_network
 mgmt_network_dev_name=ens3
+
