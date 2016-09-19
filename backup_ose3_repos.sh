@@ -27,7 +27,7 @@ ISO_DIRECTORY=~/ISO_FILES
 CLEAR=false
 IS_FIRST=true
 USER=test     # If IS_FIRST set true, you have to set this parameter which is rhn user id.
-PASSWORD=test    # If IS_FIRST set true, you have to set this parameter which is rhn password.
+export PASSWORD=dlwnghABC!!22    # If IS_FIRST set true, you have to set this parameter which is rhn password.
 
 
 
@@ -60,6 +60,10 @@ if [[ $IS_FIRST == true ]]
 then
   # Register employee subscription (Should be commented after registered.)
   echo "subscription-manager register --username=$USER --password='$PASSWORD'"
+  if [[ $(echo $PASSWORD |grep -e [^A-Za-z0-9]|wc -l) > 0 ]]; then
+    PASSWORD=$(echo $PASSWORD  |sed -r 's/([^A-Za-z0-9])/\\\1/g')
+    echo $PASSWORD
+  fi
   subscription-manager register --username=$USER --password='$PASSWORD'
   subscription-manager list --available
   subscription-manager attach --pool=8a85f9833e1404a9013e3cddf99305e6
