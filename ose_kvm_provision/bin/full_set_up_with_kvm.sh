@@ -35,7 +35,7 @@ fi
 echo -e "Do you want to go through from the creating VMs?(y/n) (or start from copying files)"
 read need_populating_kvm_vm
 
-if [ $need_populating_kvm_vm  == "y" ];
+if [ $need_populating_kvm_vm  == "y" ]
 then
 #    if [[ -e ./ansible-ose3-install ]]; then
 #      echo "* ansible-ose3-install is already cloned so I will pull it"
@@ -45,8 +45,11 @@ then
 #      git clone https://github.com/Jooho/ansible-ose3-install
 #    fi  
     echo "Download setup.sh from github.com/Jooho/shell/setup.sh"
-    curl https://raw.githubusercontent.com/Jooho/ansible-ose3-install/master/shell/setup.sh > ./setup.sh
-    chmod 777 ./setup.sh
+      if [[ ! -e ./setup.sh ]]; 
+      then
+        curl https://raw.githubusercontent.com/Jooho/ansible-ose3-install/master/shell/setup.sh > ./setup.sh
+        chmod 777 ./setup.sh
+      fi
 
     if [[ -e ./rhep-tools ]]; then
       echo "* rhep-tools is already cloned so I will pull it"
@@ -99,18 +102,23 @@ then
 
   fi
 
-    master_ip=$(grep MASTER1_PRIVATE_IP ./ose31_kvm_info.txt|cut -d"=" -f2)
+    master_ip=$(grep MASTER1_PRIVATE_IP ./${INFO_FILE}|cut -d"=" -f2)
     echo -e "Type password for root of vm(redhat): \c"
     read password
     echo "sshpass -p $password ssh -q root@$master_ip 'mkdir -p /root/ose'"
     sshpass -p $password ssh -o StrictHostKeyChecking=no -q root@$master_ip 'mkdir -p /root/ose'
    
     for file in ./*; do
+      echo $file
+      if [[ $file == "ansible-ose-install" ]]
+      then
+        sshpass -p $password scp -o StrictHostKeyChecking=no -r $(basename $file) root@$master_ip:/root/ose/.
+      fi
     #if ([ -f $file ] && [ ${file##*.} != "sh" ]); then
      if [[ -f $file ]] && [[ ! $file =~ "full" ]] && [[ ! $file =~ "command" ]]; then
         echo sshpass -p $password scp $(basename $file) root@$master_ip:/root/ose/.
         sshpass -p $password scp -o StrictHostKeyChecking=no $(basename $file) root@$master_ip:/root/ose/.
-      fi
+    fi
     done
     echo ""
     echo ""

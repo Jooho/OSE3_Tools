@@ -2,6 +2,7 @@
 
 cd $OSEKVM_HOME_PATH
 
+export ose_version_without_dot=$(echo $OSE_VERSION |tr -d '.')
 function create_ose_kvm_br(){
 
   exist_ose_kvm_ose=$(sudo virsh net-list|grep ose_br)
@@ -63,27 +64,27 @@ if [[ "$c_mode" == "clone" ]]; then
 
   for vm in $vms; do
         # Clone qcow2 file
-        sudo virt-clone -o "$BASE_VM" --name $BASE_VM"_ose31_"$c_arch"_"$vm --auto-clone 
-        sudo virsh start $BASE_VM"_ose31_"$c_arch"_"$vm
+        sudo virt-clone -o "$BASE_VM" --name $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm --auto-clone 
+        sudo virsh start $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm
 
         # Attach a new network interface for public ip
-        echo sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source ose_br --target eth${ETH_NUM} --model virtio --config --live
-        #sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source ose_br --target eth${ETH_NUM} --model virtio --config --live
-        sudo virsh attach-interface --domain $BASE_VM"_ose31_"$c_arch"_"$vm --type network --source ose_br --config --live
+        echo sudo virsh attach-interface --domain $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm --type network --source ose_br --target eth${ETH_NUM} --model virtio --config --live
+        #sudo virsh attach-interface --domain $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm --type network --source ose_br --target eth${ETH_NUM} --model virtio --config --live
+        sudo virsh attach-interface --domain $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm --type network --source ose_br --config --live
 
         # Attach a new disk for docker-pool to node vm
         if [[ $vm =~ "node" ]]; then
           #qemu-img create -f qcow2 myRHELVM1-disk2.qcow2 7G
-          sudo dd if=/dev/zero of=$VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" bs=1M count=${NODE_NEW_DEV_SIZE} 
-          sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb --live --persistent
-          #sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb 
+          sudo dd if=/dev/zero of=$VM_PATH/$BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm"_disk.qcow2" bs=1M count=${NODE_NEW_DEV_SIZE} 
+          sudo virsh attach-disk  $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm"_disk.qcow2" vdb --live --persistent
+          #sudo virsh attach-disk  $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm"_disk.qcow2" vdb 
         fi
         
         if [[ $vm =~ "infra" ]]; then
           #qemu-img create -f qcow2 myRHELVM1-disk2.qcow2 7G
-          sudo dd if=/dev/zero of=$VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" bs=1M count=${INFRA_NEW_DEV_SIZE} 
-          sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb --live --persistent 
-          #sudo virsh attach-disk  $BASE_VM"_ose31_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2" vdb 
+          sudo dd if=/dev/zero of=$VM_PATH/$BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm"_disk.qcow2" bs=1M count=${INFRA_NEW_DEV_SIZE} 
+          sudo virsh attach-disk  $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm"_disk.qcow2" vdb --live --persistent 
+          #sudo virsh attach-disk  $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm  $VM_PATH/$BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm"_disk.qcow2" vdb 
         fi
         sleep 3
   done
@@ -98,7 +99,7 @@ elif [[ "$c_mode" == "info" ]]; then
   fi
 
   for vm in $vms; do 
-    ip_list=$($OSEKVM_HOME_PATH/bin/get_ip.sh $BASE_VM"_ose31_"$c_arch"_"$vm )
+    ip_list=$($OSEKVM_HOME_PATH/bin/get_ip.sh $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm )
     for ip in $ip_list; do
       if [[ $ip =~ "192.168.200" ]]; then
         external_ip=$ip
@@ -155,24 +156,24 @@ elif [[ "$c_mode" == "template" ]]; then
 
 elif [[ "$c_mode" == "clean" ]]; then
     for vm in $vms; do
-      sudo virsh shutdown $BASE_VM"_ose31_"$c_arch"_"$vm
+      sudo virsh shutdown $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm
       if [[ $vm =~ "node" ]]; then
-       sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2"
-      # sudo  rm -rf $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm"_disk.qcow2"
+       sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm"_disk.qcow2"
+      # sudo  rm -rf $VM_PATH/$BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm"_disk.qcow2"
       fi
 
       if [[ $vm =~ "infra" ]]; then
         echo "Do you want to delete infra vm?(y/n)"
         read delete_vm
         if [[ $delete_vm == "y" ]]; then
-          sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm".qcow2"
-          sudo virsh undefine $BASE_VM"_ose31_"$c_arch"_"$vm 
+          sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm".qcow2"
+          sudo virsh undefine $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm 
         else
           echo "infra remain"
         fi
       else
-        sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose31_"$c_arch"_"$vm".qcow2"
-        sudo virsh undefine $BASE_VM"_ose31_"$c_arch"_"$vm 
+        sudo virsh vol-delete --pool default $VM_PATH/$BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm".qcow2"
+        sudo virsh undefine $BASE_VM"_ose${ose_version_without_dot}_"$c_arch"_"$vm 
       fi
     done
 
