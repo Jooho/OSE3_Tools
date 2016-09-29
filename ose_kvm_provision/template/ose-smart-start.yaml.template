@@ -16,7 +16,7 @@ overwrite_hosts_file=true
 
 # In order to install proper docker version according to openshift version, this value is needed
 openshift_major_version=3
-openshift_minor_version=2
+openshift_minor_version=1
 openshift_micro_version=0
 
 # This DNS server using bind will be installed and the wildcard card entry configuration will be applied.

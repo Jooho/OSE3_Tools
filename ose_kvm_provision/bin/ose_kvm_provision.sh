@@ -35,6 +35,9 @@ do
                             min)
                                 vms=$MIN_ARCH
                                 ;;
+                            min2)
+                                vms=$MIN2_ARCH
+                                ;;
                             *)
                                 echo "Unknown architecture - please select one of max,mid and min"
                          esac
@@ -127,6 +130,7 @@ elif [[ "$c_mode" == "template" ]]; then
     INVENTORY_FILE=production-master-ha-etcd-ha-lb-mid.yaml
   else
     INVENTORY_FILE=production-master-2node.yaml
+    #INVENTORY_FILE=production-master-2node_2.yaml
   fi
   
   # if you specify tempate, it will be overwrote.

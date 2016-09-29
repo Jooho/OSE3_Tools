@@ -8,7 +8,7 @@ export MIN_ARCH="master1 node1 node2 infra"
 export NODE_NEW_DEV_SIZE=512  #1024/5120/10240 ==> 1G/5G/11G, this is for docker storage
 export INFRA_NEW_DEV_SIZE=1024  #1024/5120/10240 ==> 1G/5G/11G, this will be used for NFS
 export PUBLIC_IP_C_LEVEL="192.168.200"   #Depend on bridge ip range
-export PUBLIC_START_IP=100
+export PUBLIC_START_IP=200
 export vms
 export INFO_FILE="ose_kvm_info.txt"
 

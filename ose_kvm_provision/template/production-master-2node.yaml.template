@@ -1,8 +1,6 @@
 [OSE3_INSTALL:children]
 masters
 nodes
-etcd
-lb
 infra
 
 [OSE3_INSTALL:vars]
@@ -101,13 +99,24 @@ openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 
 # openshift_ip : internal ip (it is normally same as openshift_public_ip)
 # openshift_public_ip : external ip
 #
+[masters]
+master1.example.com ansible_ssh_host=%MASTER1_PRIVATE_IP% mgmt_network_ip=%MASTER1_PRIVATE_IP% public_network_ip=%MASTER1_PUBLIC_IP% public_network_gw=%MASTER1_PUBLIC_GW_IP%  is_node=true openshift_public_hostname=master1.example.com openshift_hostname=master1.example.com openshift_ip=%MASTER1_PUBLIC_IP% openshift_public_ip=%MASTER1_PUBLIC_IP%
+
+[masters:vars]
+# It will help change hostname of each master system.
+set_hostname=true
+
+# It will help set up network configuration of each master system.
+set_network=true
+# Note!! It is important variable. If you misconfigure it, the master systems' network could be broken. Hence, please double-check the device is for master_mgmt_network
+mgmt_network_dev_name=ens3
+# Note!! It is important variable. If you misconfigure it, the master systems' network could be broken. Hence, please double-check the device is for master_public_network
+public_network_dev_name=ens4
+
+
 [nodes]
-node1.example.com ansible_ssh_host=%NODE1_PRIVATE_IP% mgmt_network_ip=%NODE1_PRIVATE_IP%
-openshift_node_labels="{'region': 'base', 'zone': 'infra'}" openshift_public_hostname=node1.example.com
-openshift_hostname=node1.example.com openshift_ip=%NODE1_PRIVATE_IP% openshift_public_ip=%NODE1_PRIVATE_IP%
-node2.example.com ansible_ssh_host=%NODE2_PRIVATE_IP% mgmt_network_ip=%NODE2_PRIVATE_IP%
-openshift_node_labels="{'region': 'primary', 'zone': 'center'}" openshift_public_hostname=node2.example.com
-openshift_hostname=node2.example.com openshift_ip=%NODE2_PRIVATE_IP% openshift_public_ip=%NODE2_PRIVATE_IP%
+node1.example.com ansible_ssh_host=%NODE1_PRIVATE_IP% mgmt_network_ip=%NODE1_PRIVATE_IP% public_network_ip=%NODE1_PUBLIC_IP% public_network_gw=%NODE1_PUBLIC_GW_IP% openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_public_hostname=node1.example.com openshift_hostname=node1.example.com openshift_ip=%NODE1_PUBLIC_IP% openshift_public_ip=%NODE1_PUBLIC_IP%
+node2.example.com ansible_ssh_host=%NODE2_PRIVATE_IP% mgmt_network_ip=%NODE2_PRIVATE_IP% public_network_ip=%NODE2_PUBLIC_IP% public_network_gw=%NODE2_PUBLIC_GW_IP% openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_public_hostname=node2.example.com openshift_hostname=node2.example.com openshift_ip=%NODE2_PUBLIC_IP% openshift_public_ip=%NODE2_PUBLIC_IP%
 
 
 [nodes:vars]
@@ -116,14 +125,14 @@ set_hostname=true
 
 # It will help set up network configuration of each node system.
 set_network=true
-# Note!! It is important variable. If you misconfigure it, the node systems' network could be broken. Hence, please
-# double-check the device is for node_mgmt_network
+# Note!! It is important variable. If you misconfigure it, the node systems' network could be broken. Hence, please double-check the device is for node_mgmt_network
 mgmt_network_dev_name=ens3
-
+# Note!! It is important variable. If you misconfigure it, the node systems' network could be broken. Hence, please double-check the device is for node_public_network
+public_network_dev_name=ens4
 
 
 [infra]
-infra.example.com ansible_ssh_host=%INFRA_PRIVATE_IP%  mgmt_network_ip=%INFRA_PRIVATE_IP%
+infra.example.com ansible_ssh_host=%INFRA_PRIVATE_IP%  mgmt_network_ip=%INFRA_PRIVATE_IP% public_network_ip=%INFRA_PUBLIC_IP% public_network_gw=%INFRA_PUBLIC_GW_IP%
 
 [infra:vars]
 # It will help change hostname of each infra system.
@@ -131,7 +140,7 @@ set_hostname=true
 
 # It will help set up network configuration of each infra system.
 set_network=true
-# Note!! It is important variable. If you misconfigure it, the infra systems' network could be broken. Hence, please
-# double-check the device is for infra_mgmt_network
+# Note!! It is important variable. If you misconfigure it, the infra systems' network could be broken. Hence, please double-check the device is for infra_mgmt_network
 mgmt_network_dev_name=ens3
-
+# Note!! It is important variable. If you misconfigure it, the infra systems' network could be broken. Hence, please double-check the device is for infra_public_network
+public_network_dev_name=ens4
