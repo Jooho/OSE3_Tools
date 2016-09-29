@@ -99,7 +99,8 @@ then
 
   fi
 
-    master_ip=$(grep MASTER1_PRIVATE_IP ./ose31_kvm_info.txt|cut -d"=" -f2)
+   # master_ip=$(grep MASTER1_PRIVATE_IP ./ose31_kvm_info.txt|cut -d"=" -f2)
+    master_ip=$(grep MASTER2_PRIVATE_IP ./ose31_kvm_info.txt|cut -d"=" -f2)
     echo -e "Type password for root of vm(redhat): \c"
     read password
     echo "sshpass -p $password ssh -q root@$master_ip 'mkdir -p /root/ose'"
