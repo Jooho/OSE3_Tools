@@ -18,16 +18,16 @@
 #  USER - rhn login user id.(it should be changed when IS_FIRST set to true)
 #  PASSWORD - rhn login user password.(it should be changed when IS_FIRST set to true)
 
-RHEL_VERSION="7.2"
+RHEL_VERSION="7.3"
 RHEL_MAJOR_VERSION=$(echo $RHEL_VERSION |cut -d"." -f1)
-OSE_VERSION="3.1"
+OSE_VERSION="3.4"
 BACKUP_REPOS="rhel-$RHEL_MAJOR_VERSION-server-rpms rhel-$RHEL_MAJOR_VERSION-server-extras-rpms rhel-ha-for-rhel-$RHEL_MAJOR_VERSION-server-rpms rhel-$RHEL_MAJOR_VERSION-server-ose-$OSE_VERSION-rpms"
 TEMP_DIRECTORY=/tmp/temp_repo_root
 ISO_DIRECTORY=~/ISO_FILES
 CLEAR=false
 IS_FIRST=true
 USER=test     # If IS_FIRST set true, you have to set this parameter which is rhn user id.
-export PASSWORD=dlwnghABC!!22    # If IS_FIRST set true, you have to set this parameter which is rhn password.
+export PASSWORD=password    # If IS_FIRST set true, you have to set this parameter which is rhn password.
 
 
 
@@ -88,7 +88,10 @@ then
   echo "$REPO_REGISTER"|sh
 
   # For checking enabled repositories.
-  #subscription-manager repos --list-enabled
+  subscription-manager repos --list-enabled
+
+  # clean repolist 
+  yum clean all; yum repolist
 
   # Install essential tools
   echo "Install essential tools : yum install yum-utils createrepo genisoimage -y"
