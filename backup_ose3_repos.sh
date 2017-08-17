@@ -160,6 +160,11 @@ mkisofs -r -J -joliet-long -o ../ose-$OSE_VERSION-x86_64-$(date '+%y%m%d').iso .
 cd ..
 
 echo Copy iso files to $ISO_DIRECTORY
+if [[ ! -e $ISO_DIRECTORY ]];
+then
+  mkdir $ISO_DIRECTORY
+fi
+
 cp -fv rhel-server-$RHEL_VERSION-x86_64-$(date '+%y%m%d').iso ose-$OSE_VERSION-x86_64-$(date '+%y%m%d').iso $ISO_DIRECTORY/
 
 echo done!
