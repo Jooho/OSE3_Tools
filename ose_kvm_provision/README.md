@@ -47,9 +47,9 @@ This project help you to set up complete Openshift test environment with KVM. Ba
 
 
 
-##Getting Started
+## Getting Started
 
-###[Pre-requites](https://github.com/Jooho/rhep-tools/blob/master/ose_kvm_provision/docs/prerequisites.md)
+### [Pre-requites](https://github.com/Jooho/rhep-tools/blob/master/ose_kvm_provision/docs/prerequisites.md)
 
 - Install KVM and some packages
 - Add new newtork on KVM
@@ -57,9 +57,9 @@ This project help you to set up complete Openshift test environment with KVM. Ba
 - Get full_set_up_kvm.sh 
 - Create BASE Image (above rhel7.1 'minial')
 
-###[Installation doc](https://github.com/Jooho/rhep-tools/blob/master/ose_kvm_provision/docs/installation.md)
+### [Installation doc](https://github.com/Jooho/rhep-tools/blob/master/ose_kvm_provision/docs/installation.md)
 
-###[Troubleshooting doc](https://github.com/Jooho/rhep-tools/blob/master/ose_kvm_provision/docs/troubleshooting.md)
+### [Troubleshooting doc](https://github.com/Jooho/rhep-tools/blob/master/ose_kvm_provision/docs/troubleshooting.md)
 
  
  
